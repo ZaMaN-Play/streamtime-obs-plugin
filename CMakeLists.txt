@@ -34,6 +34,10 @@ if(ENABLE_QT)
   )
 endif()
 
+if(WIN32)
+  target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE Crypt32)
+endif()
+
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE src/plugin-main.cpp)
 
 set_target_properties_plugin(${CMAKE_PROJECT_NAME} PROPERTIES OUTPUT_NAME ${_name})
