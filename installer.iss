@@ -13,6 +13,5 @@ PrivilegesRequired=admin
 UsePreviousAppDir=no
 
 [Files]
-[Files]
-Source: "release\RelWithDebInfo\obs-plugins\*"; DestDir: "{app}\obs-plugins"; Flags: recursesubdirs ignoreversion
-Source: "release\RelWithDebInfo\data\*"; DestDir: "{app}\data"; Flags: recursesubdirs ignoreversion
+Source: "release\RelWithDebInfo\streamtime\bin\64bit\*"; DestDir: "{app}\obs-plugins\64bit"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "release\RelWithDebInfo\streamtime\data\*"; DestDir: "{app}\data\obs-plugins\streamtime"; Flags: ignoreversion recursesubdirs createallsubdirs
