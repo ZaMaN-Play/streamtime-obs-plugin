@@ -304,8 +304,8 @@ public:
 		if (!token.isEmpty())
 			loadAccount();
 
-		auto *t = new QTimer(this);
-		connect(t, &QTimer::timeout, this, [this] {
+		auto *timer = new QTimer(this);
+		connect(timer, &QTimer::timeout, this, [this] {
 			if (out && outStopped)
 				cleanup();
 			if (rout && recStopped)
@@ -316,7 +316,7 @@ public:
 			syncScene(rpipe);
 			refreshUi();
 		});
-		t->start(500);
+		timer->start(500);
 	}
 
 	~StreamTimeDock()
@@ -432,19 +432,20 @@ private:
 		auto *rep = net.post(req("/api/auth/login"), QJsonDocument(b).toJson());
 		connect(rep, &QNetworkReply::finished, this, [this, rep] {
 			rep->deleteLater();
-			auto o = QJsonDocument::fromJson(rep->readAll()).object();
-			QString t = o["token"].toString();
-            if (t.isEmpty()) t = o["access_token"].toString();
-            if (t.isEmpty()) t = o["jwt"].toString();
-            if (t.isEmpty()) t = o["data"].toObject()["token"].toString();
-            if (t.isEmpty()) {
-	               QString raw = QString::fromUtf8(QJsonDocument(o).toJson(QJsonDocument::Compact));
-	               status->setText("Login keys: " + raw.left(120));
-	               return;
-           }
-
+			QByteArray body = rep->readAll();
+			int code = rep->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+			auto o = QJsonDocument::fromJson(body).object();
+			QString t = o.value("token").toString();
+			if (t.isEmpty())
+				t = o.value("access_token").toString();
 			if (t.isEmpty()) {
-				   status->setText(o["detail"].toString(o["error"].toString(o["message"].toString("Login failed"))));
+				QString d = o.value("detail").toString();
+				if (d.isEmpty())
+					d = QString("HTTP %1 err=%2 body=%3")
+						    .arg(code)
+						    .arg(rep->errorString())
+						    .arg(QString::fromUtf8(body.left(150)));
+				status->setText(d);
 				return;
 			}
 			token = t;
@@ -567,7 +568,7 @@ private:
 			bool adv = mode && !strcmp(mode, "Advanced");
 			const char *sec = adv ? "AdvOut" : "SimpleOutput";
 			const char *p = cfg ? config_get_string(cfg, sec, adv ? "RecFilePath" : "FilePath") : nullptr;
-			const char *f = cfg ? config_get_string(cfg, sec, adv ? "RecFormat2" : "RecFormat2") : nullptr;
+			const char *f = cfg ? config_get_string(cfg, sec, "RecFormat2") : nullptr;
 			if (!f && cfg)
 				f = config_get_string(cfg, sec, "RecFormat");
 			if (p && *p)
