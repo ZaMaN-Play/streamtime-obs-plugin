@@ -19,11 +19,11 @@ jobs:
       - name: Install into package folder
         run: cmake --install build_x64 --config RelWithDebInfo --prefix release/RelWithDebInfo
 
-      - name: Zip installer
-        run: Compress-Archive -Path release/RelWithDebInfo/* -DestinationPath streamtime-windows-x64.zip
+      - name: Build Setup.exe
+        run: iscc installer.iss
 
       - name: Upload installer
         uses: actions/upload-artifact@v4
         with:
-          name: streamtime-windows-x64
-          path: streamtime-windows-x64.zip
+          name: StreamTime-Setup
+          path: output/StreamTime-Setup.exe
