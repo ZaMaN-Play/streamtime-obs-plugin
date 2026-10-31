@@ -19,6 +19,11 @@ jobs:
       - name: Install into package folder
         run: cmake --install build_x64 --config RelWithDebInfo --prefix release/RelWithDebInfo
 
+      - name: List output
+        shell: pwsh
+        run: Get-ChildItem -Recurse release | ForEach-Object { $_.FullName }
+
+
       - name: Build Setup.exe
         run: iscc installer.iss
 
