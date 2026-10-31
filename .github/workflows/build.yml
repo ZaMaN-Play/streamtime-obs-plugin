@@ -10,16 +10,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build plugin
-        shell: pwsh
-        run: ./.github/scripts/Build-Windows.ps1 -Target x64 -Configuration RelWithDebInfo
+      - name: Configure
+        run: cmake --preset windows-ci-x64
 
-      - name: Package plugin (installer zip)
-        shell: pwsh
-        run: ./.github/scripts/Package-Windows.ps1 -Target x64 -Configuration RelWithDebInfo
+      - name: Build
+        run: cmake --build --preset windows-ci-x64 --config RelWithDebInfo
+
+      - name: Install into package folder
+        run: cmake --install build_x64 --config RelWithDebInfo --prefix release/RelWithDebInfo
+
+      - name: Zip installer
+        run: Compress-Archive -Path release/RelWithDebInfo/* -DestinationPath streamtime-windows-x64.zip
 
       - name: Upload installer
         uses: actions/upload-artifact@v4
         with:
           name: streamtime-windows-x64
-          path: release/*.zip
+          path: streamtime-windows-x64.zip
