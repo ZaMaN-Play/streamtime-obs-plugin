@@ -434,6 +434,15 @@ private:
 			rep->deleteLater();
 			auto o = QJsonDocument::fromJson(rep->readAll()).object();
 			QString t = o["token"].toString();
+            if (t.isEmpty()) t = o["access_token"].toString();
+            if (t.isEmpty()) t = o["jwt"].toString();
+            if (t.isEmpty()) t = o["data"].toObject()["token"].toString();
+            if (t.isEmpty()) {
+	               QString raw = QString::fromUtf8(QJsonDocument(o).toJson(QJsonDocument::Compact));
+	               status->setText("Login keys: " + raw.left(120));
+	               return;
+           }
+
 			if (t.isEmpty()) {
 				   status->setText(o["detail"].toString(o["error"].toString(o["message"].toString("Login failed"))));
 				return;
