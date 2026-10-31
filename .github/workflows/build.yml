@@ -1,0 +1,24 @@
+name: Build Windows
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure
+        run: cmake --preset windows-ci-x64
+
+      - name: Build
+        run: cmake --build --preset windows-ci-x64 --config RelWithDebInfo
+
+      - name: Upload plugin
+        uses: actions/upload-artifact@v4
+        with:
+          name: streamtime-windows
+          path: build_x64/RelWithDebInfo/*.dll
