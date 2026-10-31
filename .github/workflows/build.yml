@@ -8,17 +8,18 @@ jobs:
   build:
     runs-on: windows-2022
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Configure
-        run: cmake --preset windows-ci-x64
+      - name: Build plugin
+        shell: pwsh
+        run: .github/scripts/Build-Windows.ps1 -Target x64 -Configuration RelWithDebInfo
 
-      - name: Build
-        run: cmake --build --preset windows-ci-x64 --config RelWithDebInfo
+      - name: Package plugin (installer zip)
+        shell: pwsh
+        run: .github/scripts/Package-Windows.ps1 -Target x64 -Configuration RelWithDebInfo
 
-      - name: Upload plugin
+      - name: Upload installer
         uses: actions/upload-artifact@v4
         with:
-          name: streamtime-windows
-          path: build_x64/RelWithDebInfo/*.dll
+          name: streamtime-windows-x64
+          path: release/*.zip
