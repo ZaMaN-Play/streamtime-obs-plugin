@@ -435,7 +435,7 @@ private:
 			auto o = QJsonDocument::fromJson(rep->readAll()).object();
 			QString t = o["token"].toString();
 			if (t.isEmpty()) {
-				status->setText(o["error"].toString(o["message"].toString("Login failed")));
+				   status->setText(o["detail"].toString(o["error"].toString(o["message"].toString("Login failed"))));
 				return;
 			}
 			token = t;
