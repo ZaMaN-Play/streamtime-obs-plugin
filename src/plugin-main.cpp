@@ -2,6 +2,8 @@
 // Login, auto-configure stream key, and start/stop streaming + local recording together.
 #include <obs-module.h>
 #include <obs-frontend-api.h>
+#include <util/platform.h>
+#include <util/config-file.h>
 #include <plugin-support.h>
 
 #include <QWidget>
