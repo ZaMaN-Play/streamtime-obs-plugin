@@ -12,11 +12,11 @@ jobs:
 
       - name: Build plugin
         shell: pwsh
-        run: .github/scripts/Build-Windows.ps1 -Target x64 -Configuration RelWithDebInfo
+        run: ./.github/scripts/Build-Windows.ps1 -Target x64 -Configuration RelWithDebInfo
 
       - name: Package plugin (installer zip)
         shell: pwsh
-        run: .github/scripts/Package-Windows.ps1 -Target x64 -Configuration RelWithDebInfo
+        run: ./.github/scripts/Package-Windows.ps1 -Target x64 -Configuration RelWithDebInfo
 
       - name: Upload installer
         uses: actions/upload-artifact@v4
